@@ -42,6 +42,7 @@ walkthrough:
   traverse_tabs: true
   settle_ms: 2500
   viewport: [1600, 1000]
+  hide_selector: ''            # chrome left out of the frames, e.g. 'app-sidebar, .cookie-banner'
 
 code:
   frontend: ../frontend          # local checkout, not a remote API

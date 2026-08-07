@@ -22,6 +22,8 @@ const TRAVERSE_TABS = process.env.MAP_TRAVERSE_TABS !== '0';
 const PROBE_DIALOGS = process.env.MAP_DIALOGS === '1';
 const PAGINATE = process.env.MAP_PAGINATE === '1';
 const SETTLE = Number(process.env.MAP_SETTLE_MS ?? 2500);
+/** Product chrome to leave out of the frame — a nav rail, a cookie banner, a support widget. */
+const HIDE = process.env.MAP_HIDE_SELECTOR ?? '';
 
 /** Labels that imply a write. Never clicked, in any mode. */
 const WRITE_LABEL = /delete|remove|save|submit|send|pay|confirm|apply|upload|activate|deactivate|archive all|block|approve|reject/i;
@@ -76,6 +78,53 @@ async function rowCount(page: Page): Promise<number> {
   return Math.max(0, ariaRows - headerRows);
 }
 
+/**
+ * Prepare a storyboard-grade full-page frame: scroll to the top, drop sticky and fixed
+ * positioning — otherwise a floating header prints across the middle of the image — and hide the
+ * configured chrome. Purely visual and reverted right after the shot; nothing is submitted.
+ * Skipped while an overlay is open: a dialog is positioned fixed on purpose.
+ */
+async function flattenForShot(page: Page, hide: string): Promise<boolean> {
+  const overlay = await page
+    .locator('[role=dialog]:visible, .modal:visible, [class*="dialog" i]:visible')
+    .count()
+    .catch(() => 0);
+  if (overlay) return false;
+  await page
+    .evaluate(sel => {
+      window.scrollTo(0, 0);
+      for (const el of Array.from(document.querySelectorAll<HTMLElement>('body *'))) {
+        const pos = getComputedStyle(el).position;
+        if (pos === 'sticky' || pos === 'fixed') el.setAttribute('data-map-flat', '');
+      }
+      if (sel) {
+        for (const el of Array.from(document.querySelectorAll<HTMLElement>(sel))) {
+          el.setAttribute('data-map-hidden', '');
+        }
+      }
+      const style = document.createElement('style');
+      style.id = 'map-shot-style';
+      style.textContent =
+        '[data-map-flat]{position:static!important}[data-map-hidden]{display:none!important}';
+      document.head.appendChild(style);
+    }, hide)
+    .catch(() => {});
+  await page.waitForTimeout(250);
+  return true;
+}
+
+async function restoreAfterShot(page: Page) {
+  await page
+    .evaluate(() => {
+      document.getElementById('map-shot-style')?.remove();
+      document.querySelectorAll('[data-map-flat]').forEach(e => e.removeAttribute('data-map-flat'));
+      document
+        .querySelectorAll('[data-map-hidden]')
+        .forEach(e => e.removeAttribute('data-map-hidden'));
+    })
+    .catch(() => {});
+}
+
 async function snapshot(page: Page, tag: string, problems: Problems, requested?: string) {
   await page.waitForLoadState('networkidle').catch(() => {});
   await page.waitForTimeout(SETTLE);
@@ -127,7 +176,11 @@ async function snapshot(page: Page, tag: string, problems: Problems, requested?:
   };
 
   fs.mkdirSync(SHOTS, { recursive: true });
+  // the DOM is read first, then flattened: hiding the chrome before the reads would drop the
+  // navigation links out of the JSON
+  const flattened = await flattenForShot(page, HIDE);
   await page.screenshot({ path: path.join(SHOTS, `${tag}.png`), fullPage: true }).catch(() => {});
+  if (flattened) await restoreAfterShot(page);
   fs.writeFileSync(path.join(SHOTS, `${tag}.json`), JSON.stringify(data, null, 2), 'utf8');
 
   console.log(`\n══════ ${tag} ══════  ${data.url}`);

@@ -1,0 +1,75 @@
+<!doctype html>
+<!-- One screen of the map: frames on the left, notes on the right.
+     Copy to <map_dir>/storyboard/<slug>.html, one <article class="row"> per captured state.
+     Every caption is written from the opened PNG, never from its file name. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCREEN — storyboard</title>
+<link rel="stylesheet" href="storyboard.css">
+</head>
+<body>
+<div class="top">
+  <div class="top-in">
+    <h1>SCREEN — storyboard (desktop)</h1>
+    <p>&lt;One or two sentences: what this screen is for and which states are below.&gt;</p>
+    <div class="warnbox"><b>Not captured:</b> &lt;state — reason. Anything that would need a write,
+      an account that does not exist on this environment, data the environment cannot produce.
+      Repeat these in index.html.&gt;</div>
+    <p class="meta">Text: pages/&lt;Name&gt;.md · <a href="index.html">← all screens</a> ·
+      Captured on &lt;environment&gt; as role &lt;role&gt;, YYYY-MM-DD</p>
+    <!-- one entry per block below, same order, labels not cut mid-word -->
+    <div class="toc">
+      <a href="#list">&lt;State 1&gt;</a>
+    </div>
+  </div>
+</div>
+<div class="wrap">
+
+<article class="row" id="list">
+  <div class="row-visual">
+    <p class="visual-cap">Desktop · /&lt;path&gt;</p>
+    <img src="assets/SLUG/list.png" alt="the state, described">
+  </div>
+  <div class="row-notes">
+    <div class="tags">
+      <span class="tag tag-screen">&lt;Screen&gt;</span>
+      <span class="tag tag-asis">As-is</span>
+    </div>
+    <h3>&lt;State — one line saying what it is&gt;</h3>
+    <dl>
+      <dt>What this screen is for</dt>
+      <dd>&lt;Who opens it, what they do, what they leave with. Which roles see it.&gt;</dd>
+
+      <dt>How you get here</dt>
+      <dd>&lt;Menu item, address, the click or mode that produced this state.&gt;</dd>
+
+      <dt>What is on screen (full composition)</dt>
+      <dd><ul>
+        <li>&lt;Toolbar: buttons, exactly as labelled&gt;</li>
+        <li>&lt;Columns / sections / fields visible in this state&gt;</li>
+        <li>&lt;Row actions, pagination, banners&gt;</li>
+        <li>&lt;Empty state, quoted, and whether it is on the frame or not&gt;</li>
+      </ul></dd>
+
+      <dt>How it differs</dt>
+      <dd>&lt;The concrete difference from the neighbouring state of this same screen. Not
+        "a different set of fields" — which fields.&gt;</dd>
+
+      <dt>Links</dt>
+      <!-- where the interface is shared, link the neighbouring storyboard: order-card.html -->
+      <dd>Clicking a row opens the detail card — <a href="index.html">all screens</a>.</dd>
+
+      <dt>Observed on the frame</dt>
+      <dd>&lt;A typo in a label, a disabled control, a hardcoded value. Delete the block if there
+        is nothing. Filed as ISSUE-000.&gt;</dd>
+    </dl>
+    <div class="flag"><b>Gap:</b> &lt;what is unfinished or missing; confirmed with the owner as
+      intended / filed as ISSUE-000. Delete the block if there is nothing.&gt;</div>
+  </div>
+</article>
+
+</div>
+</body>
+</html>

@@ -5,6 +5,7 @@
 **Component:** `<path/to/component>`
 **Visible to:** <roles / guards>
 **Status:** <verified in UI on `<environment>` as role `<role>`, YYYY-MM-DD, commit `<hash>` | code only, no UI access>
+**Storyboard:** [../storyboard/<slug>.html](../storyboard/<slug>.html) — <n> states
 **Screenshots:** `<path from the repository root>/<tag>_main.png`, `…/<tag>_<tab>.png`
 <!-- Repository-root-relative, and verified to exist. A path that only resolved in the shell
      that produced it is the most common way a map rots. -->

@@ -5,6 +5,7 @@
 #   bash run.sh --target /orders --tag orders     # document a screen
 #   bash run.sh --target /orders --dialogs        # also open and close read-only dialogs
 #   bash run.sh --target /orders --paginate       # also snapshot the second page of a list
+#   bash run.sh --target /orders --hide 'app-sidebar'   # leave the nav rail out of the frame
 #
 # Finds map.config.yml by walking up from the current directory, then by searching the
 # repository. Paths inside the config are resolved against the repository root, never against
@@ -27,9 +28,10 @@ while [ $# -gt 0 ]; do
     --env)       ENV_NAME="${2:-}"; ENV_EXPLICIT=1; shift ;;
     --dialogs)   export MAP_DIALOGS=1 ;;
     --paginate)  export MAP_PAGINATE=1 ;;
+    --hide)      export MAP_HIDE_SELECTOR="${2:-}"; shift ;;
     --headed)    export MAP_HEADED=1 ;;
     --no-tabs)   export MAP_TRAVERSE_TABS=0 ;;
-    -h|--help)   sed -n '2,14p' "$0"; exit 0 ;;
+    -h|--help)   sed -n '2,15p' "$0"; exit 0 ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
   shift
@@ -91,6 +93,7 @@ if [ -n "$CONFIG" ] && [ -f "$CONFIG" ]; then
   : "${MAP_USER_VAR:=$(yaml_get "$CONFIG" auth user_var)}"
   : "${MAP_PASS_VAR:=$(yaml_get "$CONFIG" auth pass_var)}"
   : "${MAP_SCREENSHOT_DIR:=$(yaml_get "$CONFIG" walkthrough screenshot_dir)}"
+  : "${MAP_HIDE_SELECTOR:=$(yaml_get "$CONFIG" walkthrough hide_selector)}"
   : "${MAP_VIEWPORT:=$(yaml_get "$CONFIG" walkthrough viewport)}"
   : "${MAP_SETTLE_MS:=$(yaml_get "$CONFIG" walkthrough settle_ms)}"
   if [ "$(yaml_get "$CONFIG" auth manual_only)" = "true" ]; then export MAP_MANUAL_AUTH=1; fi
@@ -103,7 +106,8 @@ fi
 : "${MAP_BASE_URL:?base URL is not set — pass --config <map.config.yml> or export MAP_BASE_URL}"
 export MAP_BASE_URL
 export MAP_LOGIN_PATH="${MAP_LOGIN_PATH:-/auth/login}"
-for v in MAP_USER_SELECTOR MAP_PASS_SELECTOR MAP_SUBMIT_SELECTOR MAP_SUCCESS_SELECTOR MAP_VIEWPORT MAP_SETTLE_MS; do
+for v in MAP_USER_SELECTOR MAP_PASS_SELECTOR MAP_SUBMIT_SELECTOR MAP_SUCCESS_SELECTOR \
+         MAP_HIDE_SELECTOR MAP_VIEWPORT MAP_SETTLE_MS; do
   if [ -n "${!v:-}" ]; then export "$v"; fi
 done
 

@@ -48,6 +48,7 @@ known API and known constraints, referenced by file rather than by memory.
 | **Screens** | One file per screen: what it is for, what is on it, filters, buttons, tabs, which data is shown and where it comes from |
 | **Entities** | The objects the product operates on, and their fields |
 | **Cross-cutting functions** | Mechanisms that live across the product rather than on one screen: access control, notifications, exports, auth guards |
+| **Storyboards** | One HTML page per screen: full-page screenshots of the live interface on the left, notes per state on the right |
 | **Links** | References between all files in both directions — from the map into a screen and back |
 
 ```
@@ -61,6 +62,10 @@ known API and known constraints, referenced by file rather than by memory.
     Order.md
   functions/
     Access-Control.md
+  storyboard/
+    index.html            # every screen, plus what deliberately has no frame
+    orders.html           # frames left, notes right
+    assets/orders/*.png
 ```
 
 ## How it is assembled
@@ -79,6 +84,11 @@ The agent works one screen per session, in this order.
    other screens.
 5. **Separates fact from guess.** Anything not confirmed by the interface or the code is marked as
    needing verification. Inventing is prohibited.
+6. **Builds the storyboard.** One frame per visually distinct state — every tab, every mode of a
+   form, every wizard step, the empty state — and notes written from the opened screenshot rather
+   than from its file name. This is the step that catches what reading code cannot: a typo in a
+   label, a field that exists in one mode and not in its neighbour, a form nobody had opened for
+   a year.
 
 **The rule that makes it worth trusting:** the senior source is the code, confirmed by a walk
 through the live interface. Design documents were written before the build and never revised,
@@ -188,6 +198,9 @@ it is the one you will read most often.
   warning and is left to you rather than being silently skipped.
 - The harness reads the rendered DOM. Canvas-rendered grids, virtualised lists beyond the first
   window, and content behind hover need a hand-written locator.
+- Storyboard states the harness cannot reach on its own — a mode selector behind a custom widget,
+  a step of a wizard — need a product-specific capture spec copied from `explore-page.spec.ts`.
+  States that would require a write are not captured at all; they are listed with the reason.
 - One screen per session is a working rule, not something the tooling enforces.
 
 ## Contents
@@ -198,7 +211,9 @@ it is the one you will read most often.
 | `references/config.md` | Configuration schema and the setup interview |
 | `references/code-recon.md` | Route → component → API recipes per stack |
 | `references/doc-sources.md` | Reconciling with knowledge base, tracker, manuals, support; how gaps are filed |
-| `references/templates/` | Skeletons for `product-map.md`, `pages/`, `entities/`, `functions/` |
+| `references/storyboard.md` | Capturing frames, which states must exist, how the notes are written and checked |
+| `references/validate-storyboard.py` | Pre-delivery check of the storyboard folder: markup, images, links, orphaned and duplicate frames, boilerplate notes |
+| `references/templates/` | Skeletons for `product-map.md`, `pages/`, `entities/`, `functions/`, and the storyboard pages |
 | `assets/playwright/` | The read-only walkthrough harness: setup, auth, explore |
 
 ## Maintenance

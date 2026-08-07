@@ -10,6 +10,7 @@ bash run.sh --auth                               # headed login, saves the sessi
 bash run.sh --target /orders --tag orders        # walk one screen
 bash run.sh --target /orders --dialogs           # also open and close read-only dialogs
 bash run.sh --target /orders --paginate          # also snapshot the second page of a list
+bash run.sh --target /orders --hide 'app-sidebar' # leave the nav rail out of the frames
 bash run.sh --target /orders --env production    # only when the operator asks for it
 ```
 
@@ -34,6 +35,25 @@ For each snapshot, into the screenshot directory:
 Read the JSON, not the console. The three fields that carry findings rather than structure are
 `redirected`, `failedRequests` and `consoleErrors`: a screen whose API answers 403 renders as an
 empty list, and without them the map records "no data" while the defect stays invisible.
+
+Before each full-page shot the page is scrolled to the top and every sticky or fixed element is
+made static, so a floating header does not print across the middle of the image. `--hide` (or
+`walkthrough.hide_selector`) removes product chrome — a nav rail, a cookie banner, a support
+widget — from the frame. Both are visual, applied after the DOM is read and reverted immediately
+after the shot, and both are skipped while a dialog is open, since a dialog is fixed on purpose.
+
+## Storyboard frames
+
+The storyboard wants one frame per visually distinct state, filed per screen. Point the output at
+the storyboard folder and give each state its own tag:
+
+```bash
+MAP_SCREENSHOT_DIR=docs/product-map/storyboard/assets/orders \
+  bash run.sh --target /orders --tag list --no-tabs --hide 'app-sidebar'
+```
+
+The `<tag>.json` beside each frame is that frame's capture record. `references/storyboard.md` in
+the skill has the coverage rules and the validator.
 
 ## Tabs
 
@@ -95,6 +115,7 @@ like "this role has no access", and that lie is hard to catch once it is in the 
 | `MAP_SCREENSHOT_DIR` | Resolved to an absolute path before the run |
 | `MAP_USER_SELECTOR`, `MAP_PASS_SELECTOR`, `MAP_SUBMIT_SELECTOR`, `MAP_SUCCESS_SELECTOR` | Login selectors |
 | `MAP_TRAVERSE_TABS`, `MAP_DIALOGS`, `MAP_PAGINATE` | `0`/`1` switches for the three walk modes |
+| `MAP_HIDE_SELECTOR` | CSS selector for chrome hidden while the frame is taken |
 | `MAP_SETTLE_MS` | Wait after load before reading, default 2500 |
 | `MAP_HEADED` | `1` shows the browser |
 | `MAP_VIEWPORT` | `1920x1080` or `[1920, 1080]` |

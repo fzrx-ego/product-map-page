@@ -3,8 +3,9 @@ name: product-map-page
 description: >-
   Document one screen of a live web product from three sources — a read-only UI walkthrough,
   the source code, and the written docs — into a product map under version control.
-  Produces pages/<Name>.md, reconciles it with the map, records every place where the
-  documentation and the running product disagree. Run manually, one URL per session.
+  Produces pages/<Name>.md plus an HTML storyboard of every state of the screen, reconciles both
+  with the map, and records every place where the documentation and the running product disagree.
+  Run manually, one URL per session.
 disable-model-invocation: true
 ---
 
@@ -146,6 +147,14 @@ survives six months: `references/doc-sources.md`. Four of its rules to hold whil
 
 Read the comments on every relevant issue. Scope changes hide there, not in the description.
 
+**Findings that come from the frames** — a typo in a label, a hardcoded date, an "update" heading
+on a create form, a wizard that disagrees with the main form — are classified the same way and
+recorded twice: in the map under **Findings from the walkthrough**, and on the storyboard block
+itself. Before filing one, search the tracker three times: for a duplicate; for a **contradicting
+open issue**, which turns the same finding into a different task; and for an issue already closed
+that should have covered it — then what you file is a bug linking to it. Write the key back into
+the map and the storyboard block afterwards.
+
 ## Step 5 — write the page file
 
 Fill `references/templates/page.md` into `<map_dir>/pages/<Name>.md`; entities and functions from
@@ -163,6 +172,52 @@ their own templates.
 - Link a `functions/` or `entities/` file only if it exists; otherwise name the mechanism in plain
   text and add it to the map's cross-cutting table as "to be written".
 
+## Step 5b — the storyboard, required
+
+Alongside the page file, build an HTML storyboard of the screen: **left** — full-page screenshots
+of the live interface, **right** — notes per state written from the frame and reconciled with
+`pages/<Name>.md`. Frames, not hand-drawn mocks: a mock belongs in a future-facing spec, never in
+a map of what runs today.
+
+Full canon — capture, coverage, notes, checks: `references/storyboard.md`. Templates:
+`references/templates/storyboard.html`, `storyboard-index.html`, `storyboard.css`. The short list:
+
+1. Capture with the harness, one tag per state, into the storyboard folder:
+   `MAP_SCREENSHOT_DIR=<map_dir>/storyboard/assets/<slug> bash <walkthrough.dir>/run.sh --target /orders --tag list`.
+   The `<tag>.json` written beside each frame is its capture record — keep it there.
+2. **Every visually distinct state gets its own frame**: each tab, each mode of a form, each wizard
+   step, the empty state, the system screens. Spend a frame where the **set of fields** differs,
+   not where a button lights up. Coverage of states outranks the number of frames.
+3. All frames of one screen on **one entity**, one viewport, product chrome collapsed
+   (`--hide '<selector>'`). Data waited for, not skeletons.
+4. Write `<map_dir>/storyboard/<slug>.html` from the template, one block per state; on the first
+   run copy `storyboard.css` and `index.html` into the folder as well.
+5. **Open every PNG and write from it.** Labels exactly as shown, field composition as visible,
+   an empty state labelled empty. A caption written from the file name or from the name of the
+   mode is how a map acquires fields the screen does not have.
+6. "How it differs" names the difference from the neighbouring state. The same sentence in several
+   blocks means the block was not written.
+7. Add the screen to `storyboard/index.html`; states you could not capture go in its "what has no
+   frame" section with a reason.
+8. Put a **Storyboard:** line in the header of `pages/<Name>.md`.
+
+Without a storyboard — including every mode in which the form changes — the screen run is not
+finished.
+
+## Step 5c — check before delivering
+
+1. **Validator** — markup, missing images, dead links and anchors, external resources, orphaned and
+   duplicate frames, boilerplate notes, frames captured after a redirect or with failed requests:
+
+```bash
+python3 <skill>/references/validate-storyboard.py <map_dir>/storyboard
+```
+
+2. **Render it in a browser** from disk: no failed requests, no horizontal scrollbar. Reading the
+   file is not reading the page (`references/storyboard.md` has the script).
+3. **Reconcile.** Where a frame disagrees with `pages/<Name>.md` or `product-map.md`, the frame
+   wins: fix those files rather than the caption.
+
 ## Step 6 — wire up the links
 
 1. **Page → map**: link the map section in the page header.
@@ -174,9 +229,11 @@ their own templates.
 
 ## Step 7 — report
 
-Short, to the operator: which file was created or updated and what changed; what was confirmed in
-the UI, what came from code, what from documents, what is still open; divergences and new entries
-in "Gaps"; what the next run should cover.
+Short, to the operator: which file was created or updated and what changed; the storyboard path
+and how many states it holds; what was confirmed in the UI, what came from code, what from
+documents, what is still open; **what could not be captured, listed rather than left out**;
+divergences, new entries in "Gaps" and findings from the frames, with issue keys for anything
+filed; the result of the validator and the browser render; what the next run should cover.
 
 ## Working rules
 
