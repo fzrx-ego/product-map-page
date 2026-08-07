@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+package-lock.json
+
+# artefacts produced when the harness is used in place rather than copied out
+assets/playwright/.auth/
+assets/playwright/.test-results/
+assets/playwright/screenshots/
+assets/playwright/package.json
