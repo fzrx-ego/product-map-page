@@ -214,6 +214,10 @@ feature ships differently than it was written.
 If the map is mirrored into a shared team repository, keep the working copy next to the product
 and sync the mirror through a normal branch and merge request.
 
+## Author
+
+Yuriy Egorov — [github.com/fzrx-ego](https://github.com/fzrx-ego)
+
 ## Licence
 
 MIT. Take it, strip what does not apply, keep the source hierarchy — it is the part that makes the
