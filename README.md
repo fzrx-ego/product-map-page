@@ -5,6 +5,18 @@ repository that says what your product does *today*.
 
 One run documents one screen. Run it repeatedly and the map assembles itself.
 
+## Why this exists
+
+I built a map of my own product — and then it started giving me things I had never planned for.
+Bugs on the seams between screens that testing never saw. Server calls no document knew about. A
+QA bottleneck that stopped being one. A storyboard of every screen state that replaced the frames
+a designer used to draw by hand, and carries what a mockup never does: why the screen exists and
+which user job it closes.
+
+Two products, about 50 screens, one summer. The map was the smaller half of it.
+
+A longer write-up of how it went, in Russian: <https://yuriy-egorov.pages.dev/product-map>
+
 ## What a product map is
 
 One set of documents recording what the product can do **right now**: which screens exist, what
