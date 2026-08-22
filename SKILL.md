@@ -56,6 +56,13 @@ opening a dialog and closing it without submitting, screenshots, reading the DOM
 upload, drag-and-drop, and any button whose label implies a state change on the server.
 
 Opening a "New order" dialog to document its fields is reading. Pressing its Save button is not.
+
+This holds even when the button's first request only *validates*. A real case: Save first calls a
+"what will change" endpoint that writes nothing, but when that endpoint reports "no confirmation
+needed" the code saves immediately — and because values are normalised on load, the diff can be
+non-empty on a form nobody touched. Rule: **if a button may write depending on the state of the
+data, do not capture that state** — record it under "what has no frame" with the reason.
+
 If understanding a screen genuinely requires a write, **stop and ask the operator**.
 
 ## Step 0 — configuration, and the map itself on a first run
@@ -122,7 +129,13 @@ commit hash in the page file. A map entry without a commit cannot be re-verified
 
 ```bash
 git -C <code.frontend> pull --ff-only && git -C <code.frontend> log -1 --format='%h %ad'
+git -C <code.frontend> log --oneline --since=<date of previous run> -- <screen directory>
 ```
+
+The second command lists the issues that changed this screen since you last documented it: their
+keys tell you what to re-verify and which frames to re-capture. A checkout a week behind the
+branch is enough to make a page describe buttons the product no longer has — and a stale checkout
+is a stale checkout, never evidence that the product is broken.
 
 Then follow `references/code-recon.md`: route → component, component and template, data calls →
 the API section, models → entities, guards → access, locale files → exact labels. Search the whole
@@ -150,10 +163,27 @@ Read the comments on every relevant issue. Scope changes hide there, not in the 
 **Findings that come from the frames** — a typo in a label, a hardcoded date, an "update" heading
 on a create form, a wizard that disagrees with the main form — are classified the same way and
 recorded twice: in the map under **Findings from the walkthrough**, and on the storyboard block
-itself. Before filing one, search the tracker three times: for a duplicate; for a **contradicting
-open issue**, which turns the same finding into a different task; and for an issue already closed
-that should have covered it — then what you file is a bug linking to it. Write the key back into
-the map and the storyboard block afterwards.
+itself.
+
+Before filing anything, search the tracker **by symptom, field name and endpoint — not by screen
+name**. On one screen this turned up four existing issues covering half the findings; none of them
+mentioned the screen. Four searches:
+
+- a **duplicate** of the finding;
+- a **contradicting open issue**, which turns the same finding into a different task;
+- an issue **already closed that should have covered it** — then what you file is a bug linking to
+  it (a closed "the loader wipes settings" issue still left one flag being reset: that is a new bug
+  citing the old one);
+- a decision that this **is intended** — then do not file, reference the decision in the page file.
+
+**Comment instead of filing** when your reading explains an issue that already exists, especially
+one parked as "cannot reproduce" or declined pending a real occurrence. Put in the comment: the
+mechanism from the code, how to tell the possible paths apart next time it happens, and what you
+suggest doing. A security finding whose verification needs a write is not verified by you: describe
+the scenario for QA, label the conclusion as drawn from code, and hand it to the owner.
+
+Write every key back afterwards: into the map, into the finding's own line in the page file, and
+into the storyboard block.
 
 ## Step 5 — write the page file
 
@@ -162,6 +192,14 @@ their own templates.
 
 - **Purpose** is written for whoever uses the screen, in their language. APIs and component paths
   belong in their own sections.
+- **Describe fields in three columns**: label → what it gives the user → what the system does under
+  the hood. An inventory without those two layers just repeats the screenshot. The checklist of what
+  to look for is [references/hidden-logic.md](references/hidden-logic.md) — open it with this step.
+- **A "what the customer cannot see" section is required**: a table of "what the customer says" →
+  "what is actually happening", assembled from the hidden-logic findings. It is the part of the map
+  support uses daily.
+- Pull the product's tooltips and inline notes out of the locale files wholesale: they carry
+  explanations that exist neither in the code nor in the specs.
 - **Fact and guess are visually separated.** Anything not seen in the UI and not read in the code is
   marked `> assumed, needs verification`. Guessing is prohibited; an honest gap beats a plausible
   sentence.
@@ -200,6 +238,15 @@ Full canon — capture, coverage, notes, checks: `references/storyboard.md`. Tem
 7. Add the screen to `storyboard/index.html`; states you could not capture go in its "what has no
    frame" section with a reason.
 8. Put a **Storyboard:** line in the header of `pages/<Name>.md`.
+9. **Byte-identical frames are duplicates, not states.** They appear when a mode's base frame equals
+   the sub-mode already saved on the entity. Delete duplicates at the end of the capture run,
+   record them in the capture metadata, point the affected block at the surviving file, and explain
+   in the caption why the two states coincide.
+10. Find the entity **by business key, not by internal ID**: where records are recreated by a
+    synchronisation job, the same entity gets a new ID between runs. Put both in the storyboard
+    header and say why they differ.
+11. Rebuild the self-contained copy of the page (frames inlined as `data:` URIs) after any
+    re-capture — otherwise it keeps showing the old frames while the linked page shows the new.
 
 Without a storyboard — including every mode in which the form changes — the screen run is not
 finished.
@@ -207,7 +254,9 @@ finished.
 ## Step 5c — check before delivering
 
 1. **Validator** — markup, missing images, dead links and anchors, external resources, orphaned and
-   duplicate frames, boilerplate notes, frames captured after a redirect or with failed requests:
+   duplicate frames, boilerplate notes, frames captured after a redirect or with failed requests.
+   Read the whole output: when it reports dozens of remarks, filter the noise and work through what
+   remains, or the one real finding stays buried among identical ones.
 
 ```bash
 python3 <skill>/references/validate-storyboard.py <map_dir>/storyboard

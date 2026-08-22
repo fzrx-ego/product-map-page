@@ -35,6 +35,15 @@ intent leaks; quote it.>
 <Columns with their source field, tabs with what each holds, row actions. Quote labels exactly,
 in the product's own language, noting which locale.>
 
+### Fields
+
+| Field | Label | What it gives the user | Under the hood |
+|-------|-------|------------------------|----------------|
+
+<Three columns of meaning, never one. "Under the hood" is where conditional visibility, cascades,
+inverted values, input limits versus server limits, encodings, side effects and delays go — see
+references/hidden-logic.md. If a field genuinely has none, write "plain input, no constraints".>
+
 ### Dialogs
 
 <Dialogs reachable from this screen: what fields they hold, what they submit. Opened and closed
@@ -61,6 +70,15 @@ Scope rules — whose records this role sees — belong here; they are the most 
 misremembered thing in any product.>
 
 <If a cross-cutting file exists: `> Detail: [functions/Access-Control.md](../functions/Access-Control.md)`>
+
+## What the customer cannot see
+
+| What the customer says | What is actually happening |
+|------------------------|----------------------------|
+
+<Assembled from the hidden-logic findings, phrased as real complaints. The part of the map support
+reads every day: freshness rules that refuse writes, queues that make "saved" arrive early,
+automatic actions the product takes on its own, silent wipes.>
 
 ## Errors observed during the walkthrough
 
