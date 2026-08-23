@@ -224,9 +224,11 @@ it is the one you will read most often.
 | `references/code-recon.md` | Route → component → API recipes per stack |
 | `references/doc-sources.md` | Reconciling with knowledge base, tracker, manuals, support; how gaps are filed |
 | `references/storyboard.md` | Capturing frames, which states must exist, how the notes are written and checked |
+| `references/canvas.md` | The screen canvas: graph from code, two node layers, comments, layout, traps |
 | `references/validate-storyboard.py` | Pre-delivery check of the storyboard folder: markup, images, links, orphaned and duplicate frames, boilerplate notes |
 | `references/templates/` | Skeletons for `product-map.md`, `pages/`, `entities/`, `functions/`, and the storyboard pages |
 | `assets/playwright/` | The read-only walkthrough harness: setup, auth, explore |
+| `assets/canvas/` | The canvas toolchain: route extractor, storyboard linker, board builder, and the React Flow app with its pinned dependencies |
 
 ## Maintenance
 

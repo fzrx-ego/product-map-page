@@ -267,6 +267,40 @@ python3 <skill>/references/validate-storyboard.py <map_dir>/storyboard
 3. **Reconcile.** Where a frame disagrees with `pages/<Name>.md` or `product-map.md`, the frame
    wins: fix those files rather than the caption.
 
+---
+
+## Step 5d — the screen canvas
+
+One pannable board over the same frames: every screen at once, transitions as arrows, comments
+as sticky notes. It is rebuilt whole, so run it after a re-capture or a comment edit. Tools are
+in `assets/canvas/`; copy them into the repository once and point `canvas.config.json` at the
+project. Full detail: [references/canvas.md](references/canvas.md).
+
+```bash
+npm install --prefix <scripts>/canvas-app     # once
+python3 <scripts>/extract_routes_angular.py   # routes and transitions from the code
+python3 <scripts>/link_storyboard.py          # attach storyboard frames
+python3 <scripts>/build_canvas.py             # build the board
+```
+
+1. Refresh the frontend checkout first and check its age. A graph built from a stale copy lies
+   without saying so.
+2. `unresolved.md` must be empty afterwards. A transition the extractor could not read shows up
+   on the board as "this screen is unreachable" and is indistinguishable from a real finding.
+3. Read `storyboard-gaps.md` as a capture backlog: the route exists in code, the frame does not.
+4. **Every frame caption carries the screen's address.** Without it the state is attached to its
+   screen by hand in `states-manual.json`, and that breaks on the first re-capture.
+5. Comments live in `<map_dir>/storyboard/comments.json`, edited by hand and committed; the key
+   is a route or a state address.
+6. Verify the board with a Playwright pass — screenshots and clicks — not only by an empty
+   console: clicking a card has already been broken while the console stayed clean.
+
+The canvas does **not** replace the scrolling storyboards: those are what people search with
+Ctrl+F, link to from documents and issues, and print. Link the board from `storyboard/index.html`.
+
+The extractor shipped here reads Angular. Another stack needs its own; what matters is that it
+emits the same `screen-graph.json` shape, documented in `references/canvas.md`.
+
 ## Step 6 — wire up the links
 
 1. **Page → map**: link the map section in the page header.

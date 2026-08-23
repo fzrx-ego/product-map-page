@@ -1,0 +1,72 @@
+/* Canvas design tokens — the single source of truth for colours, radii, shadows and type.
+   Edit here; no value is duplicated anywhere else. */
+:root{
+  /* palette */
+  --Blue:#2196f3;
+  --Blue-light:#e3f2fd;
+  --Blue-lighter:#eef7fe;
+  --Blue-dark:#1565c0;
+
+  --background:#ffffff;
+  --foreground:#111418;
+  --border:#e8eaed;
+  --border-strong:#d0d5dd;
+  --border-soft:#eef0f3;
+  --text-2:#3a4049;
+  --text-3:#6b7280;
+  --text-4:#9aa0a8;
+  --bg-soft:#f7f8fa;
+  --space-bg:oklch(0.981 0.005 248);
+  --xy-background-color:var(--space-bg);
+
+  --success:#16a34a;
+  --warning:#ca8a04;
+  --danger:#ef4444;
+  --danger-light:rgba(239,68,68,.1);
+
+  /* radii */
+  --radius:0.5rem;
+  --radius-sm:calc(var(--radius) * .6);
+  --radius-md:calc(var(--radius) * .8);
+  --radius-lg:var(--radius);
+  --radius-xl:calc(var(--radius) * 1.4);
+  --radius-2xl:calc(var(--radius) * 1.8);
+  --radius-base:6px;
+
+  /* shadows */
+  --shadow-soft:0 1px 2px rgba(17,20,24,.04), 0 1px 1px rgba(17,20,24,.03);
+  --shadow-md:0 4px 12px rgba(17,20,24,.06), 0 1px 2px rgba(17,20,24,.04);
+  --shadow-toolbar:0 6px 24px rgba(17,20,24,.08), 0 2px 6px rgba(17,20,24,.05);
+  --shadow-popover:0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -4px rgba(0,0,0,.1);
+
+  /* easing */
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-in-out:cubic-bezier(.77,0,.175,1);
+  --ease-drawer:cubic-bezier(.32,.72,0,1);
+
+  /* type */
+  --font:'Fira Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  /* sticky notes and group frames */
+  --sticky-yellow:oklch(0.964 0.078 100);
+  --sticky-yellow-shadow:oklch(0.917 0.113 98);
+  --sticky-yellow-text:oklch(0.28 0.027 108);
+  --sticky-pink:oklch(0.918 0.046 358);
+  --sticky-pink-shadow:oklch(0.862 0.067 357);
+  --sticky-pink-text:oklch(0.268 0.052 359);
+}
+
+/* group frame: the colour is set on the node itself through --gf-* */
+.gf-blue{--gf-fill:oklch(0.658 0.169 249 / .045);--gf-border:oklch(0.9 0.03 250);
+  --gf-bar:oklch(0.96 0.015 248);--gf-text:oklch(0.51 0.16 256);--gf-dot:oklch(0.658 0.169 249)}
+.gf-green{--gf-fill:oklch(0.65 0.17 145 / .05);--gf-border:oklch(0.895 0.04 142);
+  --gf-bar:oklch(0.96 0.02 142);--gf-text:oklch(0.45 0.12 146);--gf-dot:oklch(0.65 0.17 145)}
+.gf-purple{--gf-fill:oklch(0.6 0.19 300 / .05);--gf-border:oklch(0.89 0.035 301);
+  --gf-bar:oklch(0.955 0.018 301);--gf-text:oklch(0.45 0.13 298);--gf-dot:oklch(0.6 0.19 300)}
+.gf-yellow{--gf-fill:oklch(0.75 0.15 95 / .06);--gf-border:oklch(0.9 0.06 98);
+  --gf-bar:oklch(0.965 0.03 98);--gf-text:oklch(0.46 0.1 95);--gf-dot:oklch(0.75 0.15 95)}
+.gf-pink{--gf-fill:oklch(0.65 0.18 358 / .05);--gf-border:oklch(0.895 0.035 358);
+  --gf-bar:oklch(0.96 0.017 358);--gf-text:oklch(0.45 0.12 358);--gf-dot:oklch(0.65 0.18 358)}
+.gf-gray{--gf-fill:oklch(0.5 0 0 / .04);--gf-border:oklch(0.87 0 0);
+  --gf-bar:oklch(0.95 0 0);--gf-text:oklch(0.42 0 0);--gf-dot:oklch(0.55 0 0)}

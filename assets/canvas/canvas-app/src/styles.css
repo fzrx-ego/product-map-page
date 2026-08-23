@@ -1,0 +1,173 @@
+/* Canvas shell. Values come from tokens.css; React Flow ships its own style.css,
+   so only our nodes and panels live here. */
+*{box-sizing:border-box}
+html,body,#root{height:100%;margin:0}
+body{font-family:var(--font);color:var(--foreground);background:var(--space-bg);
+  font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.root{position:absolute;inset:0}
+.react-flow__attribution{display:none}
+
+/* ---------- screen card ---------- */
+.card{background:var(--background);border:1px solid var(--border);border-radius:var(--radius-xl);
+  overflow:hidden;display:flex;flex-direction:column;height:100%;box-shadow:var(--shadow-md);
+  transition:box-shadow .14s ease,border-color .14s ease}
+.card:hover{border-color:var(--border-strong)}
+.card.sel{outline:1px solid color-mix(in srgb, var(--Blue) 72%, transparent);outline-offset:1px;
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--Blue) 16%, transparent), var(--shadow-md)}
+.card.state{background:var(--bg-soft)}
+.card.nos{border-style:dashed;background:transparent;box-shadow:none}
+.card .shot{flex:0 0 auto;background:var(--bg-soft);border-bottom:1px solid var(--border-soft);
+  overflow:hidden;display:flex;align-items:flex-start;justify-content:center;position:relative}
+.card.nos .shot{background:transparent;border-bottom-style:dashed}
+.card .shot img{width:100%;display:block}
+.card .shot.cut::after{content:'';position:absolute;left:0;right:0;bottom:0;height:52px;
+  background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.94))}
+.card .ph{margin:auto;font-size:13px;color:var(--text-4);padding:22px;text-align:center}
+.card .meta{flex:1 1 auto;padding:12px 16px 14px;display:flex;flex-direction:column;justify-content:center}
+.card .ttl{font-size:16px;font-weight:500;line-height:1.375;margin-bottom:4px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .sub{font-family:var(--mono);font-size:11px;line-height:1.45;color:var(--text-4);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .pins{position:absolute;right:10px;top:10px;display:flex;gap:5px;z-index:2}
+.pin{font-size:11px;font-weight:600;letter-spacing:.02em;line-height:1.2;padding:4px 8px;
+  border-radius:var(--radius-sm);background:rgba(255,255,255,.94);border:1px solid var(--border);
+  color:var(--text-3)}
+.pin.role{color:var(--Blue-dark);border-color:color-mix(in srgb, var(--Blue) 30%, transparent);
+  background:var(--Blue-lighter)}
+.pin.gap{color:var(--danger);border-color:color-mix(in srgb, var(--danger) 32%, transparent);
+  background:var(--danger-light)}
+.pin.note{color:var(--warning);border-color:color-mix(in srgb, var(--warning) 32%, transparent);
+  background:color-mix(in srgb, var(--warning) 12%, transparent)}
+.dim{opacity:.22}
+
+/* ---------- sticky note ---------- */
+.sticky{height:100%;background:var(--sticky-yellow);color:var(--sticky-yellow-text);
+  border-radius:var(--radius-lg);padding:12px 14px;font-size:12px;line-height:1.4;overflow:hidden;
+  box-shadow:0 2px 0 var(--sticky-yellow-shadow), var(--shadow-soft)}
+.sticky.finding{background:var(--sticky-pink);color:var(--sticky-pink-text);
+  box-shadow:0 2px 0 var(--sticky-pink-shadow), var(--shadow-soft)}
+.sticky b{display:block;font-size:11px;font-weight:600;letter-spacing:.02em;line-height:1.2;
+  opacity:.62;margin-bottom:5px}
+
+/* ---------- group frame ---------- */
+.zone{width:100%;height:100%;position:relative;border-radius:16px;
+  border:1.5px solid var(--gf-border);background:var(--gf-fill)}
+.zone .bar{position:absolute;top:8px;left:8px;display:flex;align-items:center;gap:6px;height:30px;
+  padding:0 10px;border-radius:9px;background:var(--gf-bar);border:1px solid var(--gf-border);
+  white-space:nowrap;user-select:none}
+.zone .dot{width:8px;height:8px;border-radius:50%;background:var(--gf-dot);flex-shrink:0}
+.zone .label{font-size:12px;font-weight:600;color:var(--gf-text);line-height:1}
+.zone .cnt{font-size:11px;font-weight:500;color:var(--gf-text);opacity:.6;line-height:1}
+
+/* ---------- floating panels ---------- */
+.float{border:1px solid var(--border);background:rgba(255,255,255,.96);
+  backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);
+  box-shadow:var(--shadow-toolbar)}
+
+/* main dock — bottom left, board name and icons only */
+.dock{left:12px!important;bottom:12px!important;margin:0!important;z-index:60;
+  display:flex;align-items:center;gap:2px;padding:6px;border-radius:12px;min-width:316px}
+
+/* search lives in the same dock: the magnifier expands it across the dock's width */
+.dock-search{display:flex;align-items:center;gap:8px;width:100%;height:36px;padding:0 6px 0 10px;
+  color:var(--text-4)}
+.dock-search .search{flex:1;min-width:0;border:none;background:transparent;font:inherit;font-size:12px;
+  font-weight:500;color:var(--foreground);padding:0}
+.dock-search .search::placeholder{color:var(--text-4)}
+.dock-search .search:focus{outline:none}
+.dock-search .search::-webkit-search-cancel-button{display:none}
+.ico-btn.sm{width:26px;height:26px;border-radius:7px}
+.dock .brand{display:flex;flex-direction:column;gap:1px;padding:0 10px 0 6px;white-space:nowrap}
+.dock .brand{font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--foreground);line-height:1.2}
+.dock .brand i{font-style:normal;font-size:11px;font-weight:400;color:var(--text-4)}
+.dock-sep{width:1px;height:24px;background:var(--border);margin:0 4px}
+
+.ico-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border:none;border-radius:8px;background:transparent;color:var(--text-2);
+  cursor:pointer;transition:background .12s ease,color .12s ease}
+.ico-btn:hover{background:var(--bg-soft);color:var(--foreground)}
+.ico-btn[data-active]{background:var(--Blue-lighter);color:var(--Blue)}
+
+.tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:#181a24;color:#fff;font-size:11px;padding:4px 8px;border-radius:6px;white-space:nowrap;
+  pointer-events:none;opacity:0;transition:opacity .12s ease .15s;z-index:30}
+.tooltip kbd{font-family:var(--mono);font-size:10px;padding:1px 4px;margin-left:5px;
+  background:rgba(255,255,255,.14);border-radius:3px}
+.ico-btn:hover .tooltip{opacity:1}
+.zoom-dock .tooltip{bottom:auto;top:50%;left:auto;right:calc(100% + 8px);transform:translateY(-50%)}
+
+/* popover lists: transition types and groups hide behind a button */
+.pop-anchor{position:relative}
+.pop-scrim{position:fixed;inset:0;z-index:100}
+.pop{position:absolute;left:0;bottom:calc(100% + 8px);z-index:110;padding:8px;border-radius:12px;
+  background:#fff;border:1px solid var(--border);display:flex;flex-direction:column;gap:1px;
+  box-shadow:0 1px 2px rgba(17,20,24,.06),0 8px 24px rgba(17,20,24,.1),0 24px 56px rgba(17,20,24,.16);
+  animation:popIn .14s ease-out}
+@keyframes popIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.pop-title{font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--text-4);padding:4px 8px 6px}
+.pop-row{display:flex;align-items:center;gap:9px;width:100%;height:32px;padding:0 8px;border:none;
+  border-radius:8px;background:transparent;color:var(--text-3);font:inherit;font-size:12px;font-weight:500;
+  cursor:pointer;text-align:left}
+.pop-row:hover{background:var(--bg-soft)}
+.pop-row[data-on]{color:var(--foreground)}
+.pop-row span{flex:1}
+.pop-row em{font-style:normal;font-size:11px;color:var(--text-4);font-variant-numeric:tabular-nums}
+.pop-row .dot-sm{opacity:.3}
+.pop-row[data-on] .dot-sm{opacity:1}
+.dot-sm{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* zoom — a vertical dock at the right edge */
+.zoom-dock{position:absolute;right:12px;bottom:12px;z-index:60;width:36px;padding:6px;border-radius:10px;
+  display:flex;flex-direction:column;align-items:center;gap:3px}
+.zoom-dock .ico-btn{width:24px;height:24px;border-radius:6px}
+.zoom-dock .pct{width:24px;text-align:center;font:inherit;font-size:11px;color:var(--text-3);
+  font-variant-numeric:tabular-nums;border:none;background:transparent;outline:none;padding:2px 0}
+.zoom-dock .pct:hover,.zoom-dock .pct:focus{background:var(--bg-soft);border-radius:4px;color:var(--foreground)}
+.hundred{font-size:9px;line-height:1;font-variant-numeric:tabular-nums}
+.dock-divider{width:24px;height:1px;background:var(--border);margin:3px 0}
+
+/* the side panel floats with a margin instead of being glued to the window */
+.panel{position:absolute;right:12px;top:12px;bottom:12px;width:min(430px,calc(100vw - 24px));z-index:60;
+  display:flex;flex-direction:column;overflow:hidden;border-radius:12px;
+  transform:translateX(calc(100% + 24px));opacity:0;pointer-events:none;
+  transition:transform 250ms var(--ease-drawer),opacity 180ms ease}
+.panel.open{transform:none;opacity:1;pointer-events:auto}
+.panel .ph{padding:16px 18px 12px;border-bottom:1px solid var(--border-soft);position:relative;flex:0 0 auto}
+.panel .ph h2{margin:0 0 5px;font-size:16px;font-weight:500;line-height:1.375;padding-right:28px}
+.panel .ph code{font-family:var(--mono);font-size:11px;color:var(--text-4)}
+.panel .close{position:absolute;right:12px;top:12px;width:24px;height:24px;border:none;background:transparent;
+  border-radius:var(--radius-base);font-size:18px;line-height:1;color:var(--text-4);cursor:pointer}
+.panel .close:hover{background:var(--bg-soft);color:var(--foreground)}
+.panel .body{overflow:auto;padding:14px 18px 24px;color:var(--text-2)}
+.panel h3{font-size:11px;font-weight:600;letter-spacing:.02em;line-height:1.2;text-transform:uppercase;
+  color:var(--text-4);margin:18px 0 6px}
+.panel h3:first-child{margin-top:0}
+.panel ul{margin:0;padding-left:18px}
+.panel li{margin-bottom:3px}
+.panel a{color:var(--Blue)}
+.panel code{font-family:var(--mono);font-size:11px}
+.jump{display:block;width:100%;text-align:left;font:inherit;font-size:12px;font-weight:500;padding:7px 10px;
+  margin-bottom:4px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--bg-soft);
+  color:var(--text-2);cursor:pointer}
+.jump:hover{border-color:var(--Blue);color:var(--Blue)}
+.jump .t{font-weight:400;color:var(--text-4);font-size:11px;margin-top:2px}
+.cmt{background:var(--sticky-yellow);color:var(--sticky-yellow-text);border-radius:var(--radius-lg);
+  padding:9px 11px;margin-bottom:6px;font-size:12px}
+.cmt.finding{background:var(--sticky-pink);color:var(--sticky-pink-text)}
+.cmt .who{font-size:11px;font-weight:600;letter-spacing:.02em;opacity:.62;margin-bottom:3px}
+.flagbox{background:var(--danger-light);border-left:3px solid var(--danger);padding:9px 11px;
+  border-radius:0 var(--radius-base) var(--radius-base) 0;margin-bottom:7px;font-size:12px}
+
+/* group titles drawn over the board: scaling them in board coordinates would overlap the cards */
+.zlabels{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden}
+.zlabels span{position:absolute;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;
+  border-radius:9px;background:rgba(255,255,255,.94);border:1px solid var(--border);
+  font-size:12px;font-weight:600;color:var(--text-2);white-space:nowrap;box-shadow:var(--shadow-soft)}
+
+/* React Flow's own panels float too */
+.react-flow__minimap{right:60px!important;bottom:12px!important;width:196px!important;height:142px!important;
+  border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-toolbar);
+  background:rgba(255,255,255,.96)!important}
+.react-flow__minimap-mask{fill:color-mix(in srgb, var(--space-bg) 72%, transparent)}
+.with-panel .react-flow__minimap{right:calc(min(430px, 100vw - 24px) + 72px)!important}
+.with-panel .zoom-dock{right:calc(min(430px, 100vw - 24px) + 24px)}

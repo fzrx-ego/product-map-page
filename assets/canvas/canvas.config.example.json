@@ -1,0 +1,15 @@
+{
+  "_comment": "Paths and board sections, relative to the repository root. The root is found by walking up from the scripts: the first directory that contains the storyboard folder. groups maps the first URL segment to a section title; the key order is the order of sections on the board.",
+  "frontend": "../frontend",
+  "storyboard": "docs/product-map/storyboard",
+  "product": "Example",
+  "title": "Example — screen canvas",
+  "start_at": "/items",
+  "groups": {
+    "auth": "Sign in and sign up",
+    "items": "Items",
+    "settings": "Settings"
+  },
+  "service_group": "Service screens",
+  "global_group": "From any screen"
+}

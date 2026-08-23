@@ -150,6 +150,10 @@ repeated across blocks means the block was not written: sixteen provider forms a
 
 ### Markup
 
+- **A frame caption (`visual-cap`) starts with the screen's address:** `Desktop · /items/:id/settings · Advanced`.
+  The first part after the device is the address, the rest is the state inside the screen. The canvas
+  joins frames to routes on that caption; without an address the join has to be maintained by hand in
+  `states-manual.json` and breaks on the first re-capture.
 - HTML is written as HTML: field names and paths go in `<code>`, not in markdown backticks.
 - Table of contents: labels not cut mid-word, order identical to the order of blocks in the body.
 - No external resources — no web fonts, no CDN. The pages are opened from disk, offline.
